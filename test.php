@@ -1,5 +1,5 @@
 <?php
-require_once "./speech/AipSpeech.php";
+require_once "./extr/speech/AipSpeech.php";
 require_once './config/config.local.php';
 
 // 创建客户端对象
