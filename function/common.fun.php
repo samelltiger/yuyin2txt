@@ -98,6 +98,8 @@ function save_upload_file($file, $save_dir='./upload')
 function convert_to_allow($path, $to= 'wav')
 {
     global $BASE_DIR;
+    global ;
+
     $path = ltrim($path,'.');
     $extra  = explode('.', $path);
     $extra_name  = array_pop( $extra );
@@ -112,8 +114,8 @@ function convert_to_allow($path, $to= 'wav')
     if( file_exists( $new_name ) ){
         $new_name = $BASE_DIR.$all_name.randString(6).'.'.$to;
     }
-    $cmd_templat = 'sudo /usr/local/bin/ffmpeg -y -i %s %s 2>&1 | grep time';
-    $cmd = sprintf( $cmd_templat, $BASE_DIR.$path, $new_name );
+    $cmd_templat = 'sudo %s -y -i %s %s 2>&1';
+    $cmd = sprintf( $cmd_templat, FFMPEG_DIR, $BASE_DIR.$path, $new_name );
     exec($cmd, $info, $status);
     print_r($info);
     // echo $new_name;die;
