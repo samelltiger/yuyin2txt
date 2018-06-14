@@ -121,7 +121,7 @@ function convert_to_allow($path, $to= 'wav')
     sleep(1);
 
     print_r($status);
-    echo $new_name;
+    echo 'new_name is: '.$new_name;
     chmod($new_name, 0777);
     // echo $cmd;die;
     if ( $status == 0 ) {
@@ -153,8 +153,8 @@ function yuyin2txt($path)
         'dev_pid' => 1536,
     )) ;
 
-    print_r($res_json['err_no']);
-    print_r($res_json['result']);
+    print_r($res_json);
+    // print_r($res_json['result']);
 
 }
 
