@@ -115,16 +115,11 @@ function convert_to_allow($path, $to= 'wav')
     }
     $cmd_templat = '%s -y -i %s %s 2>&1';
     $cmd = sprintf( $cmd_templat, FFMPEG_DIR, $BASE_DIR.$path, $new_name );
-    echo $cmd;
+
     $info = null;
     $status = null;
     exec($cmd, $info, $status);
-    sleep(3);
-
-    print_r($info);
-    echo '\n status:';
-    print_r($status);
-    echo 'new_name is: '.$new_name;
+    sleep(1);
 
     chmod($new_name, 0777);
 
@@ -159,9 +154,11 @@ function yuyin2txt($path)
         'dev_pid' => 1536,
     )) ;
 
-    print_r($res_json);
-    // print_r($res_json['result']);
+    if( $res_json['err_no'] ){
+        return $res_json['result'];
+    }
 
+    return false;
 }
 
  ?>
