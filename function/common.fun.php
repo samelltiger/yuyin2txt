@@ -121,6 +121,8 @@ function convert_to_allow($path, $to= 'wav')
     exec($cmd, $info, $status);
     sleep(3);
 
+    print_r($info);
+    echo '\n status:';
     print_r($status);
     echo 'new_name is: '.$new_name;
 
