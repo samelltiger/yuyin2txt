@@ -106,7 +106,7 @@ function convert_to_allow($path, $to= 'wav')
 
     // 如果现在的扩展名与转换后扩展名一样，则直接返回
     if( $extra_name && $extra_name === $to ){
-        return $path;
+        return $BASE_DIR.$path;
     }
 
     $new_name = $BASE_DIR.$all_name.'.'.$to;
