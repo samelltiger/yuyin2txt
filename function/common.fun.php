@@ -92,29 +92,65 @@ function save_upload_file($file, $save_dir='./upload')
 
 }
 
-// 转换音频格式到允许的格式
-function convert_to_allow($path,$to)
-{
-	$from = end(split($path,'.'));
-	if(!in_array($from,['wav'])){
-		return false;
-	}
 
-	return true;
+
+// 转换音频格式到允许的格式
+function convert_to_allow($path, $to= 'wav')
+{
+    global $BASE_DIR;
+    $path = ltrim($path,'.');
+    $extra  = explode('.', $path);
+    $extra_name  = array_pop( $extra );
+    $all_name = join( '.', $extra );
+
+    // 如果现在的扩展名与转换后扩展名一样，则直接返回
+    if( $extra_name && $extra_name === $to ){
+        return $path;
+    }
+
+    $new_name = $BASE_DIR.$all_name.'.'.$to;
+    if( file_exists( $new_name ) ){
+        $new_name = $BASE_DIR.$all_name.randString(6).'.'.$to;
+    }
+    $cmd_templat = 'sudo /usr/local/bin/ffmpeg -y -i %s %s 2>&1 | grep time';
+    $cmd = sprintf( $cmd_templat, $BASE_DIR.$path, $new_name );
+    exec($cmd, $info, $status);
+    print_r($info);
+    // echo $new_name;die;
+    chmod($new_name, 0777);
+    // echo $cmd;die;
+    if ( $status == 0 ) {
+        return $new_name;
+    }
+
+	return false;
 }
 
 function yuyin2txt($path)
 {
+    // echo __file__;die;
+
+    if(!file_exists($path)){
+        return false;
+    }
+    $new_file = convert_to_allow($path);
+    if( !$new_file ){
+        return false;
+    }
 	// 创建客户端对象
 	$client = new AipSpeech(APP_ID, API_KEY, SECRET_KEY);
+    $extra  = explode('.', $new_file);
+    $extra  = end( $extra );
+    echo  $extra;
+	
 
-	echo "<pre>";
-	// 识别本地文件
-	$res_json = $client->asr(file_get_contents('16k.pcm'), 'pcm', 16000, array(
-	    'dev_pid' => 1536,
-	)) ;
+    // 识别本地文件
+    $res_json = $client->asr( file_get_contents($new_file), $extra, 16000, array(
+        'dev_pid' => 1536,
+    )) ;
 
-	print_r($res_json);
+    print_r($res_json);
+
 }
 
  ?>
