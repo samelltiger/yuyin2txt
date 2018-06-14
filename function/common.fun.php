@@ -115,6 +115,8 @@ function convert_to_allow($path, $to= 'wav')
     }
     $cmd_templat = '%s -y -i %s %s 2>&1';
     $cmd = sprintf( $cmd_templat, FFMPEG_DIR, $BASE_DIR.$path, $new_name );
+    $info = null;
+    $status = null;
     exec($cmd, $info, $status);
     print_r($info);
     // echo $new_name;die;
