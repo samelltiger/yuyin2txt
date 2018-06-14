@@ -6,6 +6,10 @@ require_once "./function/common.fun.php";
 
 ob_start();
 
+$response = [
+	'success'=> null,
+	'data'   => null
+];
 
 if(isset($_FILES['audioData'])){
 	$up_file = $_FILES['audioData'];
@@ -13,18 +17,21 @@ if(isset($_FILES['audioData'])){
 
 		$res = yuyin2txt($path);
 		if( $res ){
-			print_r($res);
+			$response['success'] = 1;
+			$response['data']    = $res;
 		}else{
-			echo '识别失败！';
+			$response['success'] = 0;
+			$response['data']    = '识别失败！';
 		}
-
-		$content = ob_get_contents();
-		ob_clean();
-		exit(json_encode(['result'=> $content ]));
 	}else{
-		exit(json_encode(['result'=>'保存失败！']));
+		$response['success'] = 0;
+		$response['data']    = '未知错误！';
 	}
 }else{
-		exit(json_encode(['result'=>'没有任何数据！']));
+		$response['success'] = 0;
+		$response['data']    = '您没有传送任何数据！';
 }
+
+exit(json_encode($response ));
+
 ?>
