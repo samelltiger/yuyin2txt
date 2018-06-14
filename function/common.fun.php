@@ -137,8 +137,8 @@ function yuyin2txt($path)
         return false;
     }
     $new_file = convert_to_allow($path);
-    echo '$new_file convert_to_allow:';
-    var_dump($new_file);
+    // echo '$new_file convert_to_allow:';
+    // var_dump($new_file);
     if( !$new_file ){
         return false;
     }
@@ -146,15 +146,15 @@ function yuyin2txt($path)
 	$client = new AipSpeech(APP_ID, API_KEY, SECRET_KEY);
     $extra  = explode('.', $new_file);
     $extra  = end( $extra );
-    echo  $extra;
 	
 
     // 识别本地文件
     $res_json = $client->asr( file_get_contents($new_file), $extra, 16000, array(
         'dev_pid' => 1536,
     )) ;
+    // print_r($res_json);
 
-    if( $res_json['err_no'] ){
+    if( isset($res_json['err_no']) && $res_json['err_no']===0 ){
         return $res_json['result'];
     }
 
