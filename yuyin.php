@@ -6,9 +6,9 @@
 
 require_once "./function/common.fun.php";
 
-// yuyin2txt('./upload/CqVnQXmlrW.mp3');
+yuyin2txt('./upload/CqVnQXmlrW.mp3');
 // echo dirname("/Applications/MAMP/htdocs/yuyin2txt/function/common.fun.php");
 // echo dirname(dirname("/Applications/MAMP/htdocs/yuyin2txt/function/common.fun.php"));
 // echo "<br>".$BASE_DIR;
-echo exec('whoami');
+// echo exec('whoami');
 ?>
