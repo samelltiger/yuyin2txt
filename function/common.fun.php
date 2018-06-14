@@ -139,7 +139,7 @@ function yuyin2txt($path)
         return false;
     }
     $new_file = convert_to_allow($path);
-    echo '$new_file convert_to_allow:'
+    echo '$new_file convert_to_allow:';
     var_dump($new_file);
     if( !$new_file ){
         return false;
