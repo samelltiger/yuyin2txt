@@ -122,8 +122,9 @@ function convert_to_allow($path, $to= 'wav')
 
     print_r($status);
     echo 'new_name is: '.$new_name;
+
     chmod($new_name, 0777);
-    // echo $cmd;die;
+
     if ( $status == 0 ) {
         return $new_name;
     }
@@ -138,6 +139,8 @@ function yuyin2txt($path)
         return false;
     }
     $new_file = convert_to_allow($path);
+    echo '$new_file convert_to_allow:'
+    var_dump($new_file);
     if( !$new_file ){
         return false;
     }
