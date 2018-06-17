@@ -16,9 +16,16 @@ if(isset($_FILES['audioData'])){
 	if( $path = save_upload_file($up_file) ){
 
 		$res = yuyin2txt($path);
+		// print_r($res[0]);
 		if( $res ){
-			$response['success'] = 1;
-			$response['data']    = $res;
+			$res_json = file_get_contents('http://localhost:8080/search?keywords='.urlencode($res[0]));
+			$res = json_decode($res_json,true);
+			if(isset($res['success'])&&$res['success']===1){
+				$response['success'] = 1;
+			}else{
+				$response['success'] = 0;
+			}
+			$response['data']    = $res['data'];
 		}else{
 			$response['success'] = 0;
 			$response['data']    = '识别失败！';
