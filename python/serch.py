@@ -1,4 +1,4 @@
-from function.common import search, response_json, create_index, insert_in
+from function.common import *
 import json
 from bottle import request, route, run, template
 
@@ -6,44 +6,61 @@ from bottle import request, route, run, template
 @route('/search',method='GET')
 def index( ):
     keywords = request.query.keywords or False
+    type_of  = request.query.type or False
     if not keywords:
         return response_json('参数不正确！',0)
 
     print('keywords:',keywords)
     # keywords='阅读'
-    res,kws = search(keywords)
 
-    ids = {}
-    res_dict = {}
-    res_list = []
+    if type_of:
+        if 'job' in type_of:
+            res,kws = search(keywords, ['job_name','type','company_name'],'./index/job_index')
+        elif 'farm' in type_of:
+            res,kws = search(keywords, ['maintype','place'],'./index/farm_products_index')
+        else:
+            return response_json('参数错误，type值为 job或farm',0) 
 
-    if len(res):
-        for li,kw in zip(res,kws):
-            for one in li:
-                # print(one)
-                res_dict[str(one['book_id'])] = {'data':dict(one)}
-                ids[str(one['book_id'])] = ids.get(str(one['book_id']),'')+kw+','
-        
-        for idx in res_dict.keys():
-            res_dict[idx]['matched'] = ids.get(idx,'')
-            res_list.append(res_dict[idx])
-
-
-        code = 1
-        data = res_list
+        if res:
+            code = 1
+            data = list_to_dict(res,kws,'id',True)
+        else:
+            code = 0
+            data = '没有找到你想要的数据'
     else:
         code = 0
-        data = '没有找到你想要的数据'
-    js = response_json(data,code) 
+        data = '参数错误，type值为 job或farm'
+
+    js = response_json(data, code) 
     return js
 
 
 # 创建索引
 @route('/index',method='POST')
 def creat_index():
-    if create_index():
-        return response_json('创建成功！')
-    return response_json('创建失败！',0)
+    type_of = request.forms.get('type') or False
+    status = False
+    if type_of:
+        if 'job' in type_of:
+            status = create_job_index()
+        elif 'farm' in type_of:
+            status = create_farm_index()
+        elif 'both' in type_of:
+            status = create_job_index() and create_farm_index()
+        else:
+            return response_json('参数错误，type值为 job或farm',0) 
+
+        if status:
+            code = 1
+            data = '创建成功！'
+        else:
+            code = 0
+            data = '没有找到你想要的数据'
+    else:
+        code = 0
+        data = '参数错误，type值为 job或farm或both'
+
+    return response_json(data, code)
 
 # 插入新数据
 @route('/search',method='POST')
@@ -53,9 +70,8 @@ def insert():
         return response_json('参数不正确！',0)
     data = json.loads(data_json,encoding='utf-8')
     if insert_in(data):
-        return response_json('插入成功！',1)  
+        return response_json('插入成功！',1)
 
     return response_json('插入失败！',0)
 
 run(host='localhost', port=8080)
-# print(index())
