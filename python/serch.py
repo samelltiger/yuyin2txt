@@ -66,12 +66,29 @@ def creat_index():
 @route('/search',method='POST')
 def insert():
     data_json = request.forms.get('data') or False
+    type_of = request.forms.get('type') or False
     if not data_json:
         return response_json('参数不正确！',0)
-    data = json.loads(data_json,encoding='utf-8')
-    if insert_in(data):
-        return response_json('插入成功！',1)
+    data = json.loads(data_json, encoding='utf-8')
 
-    return response_json('插入失败！',0)
+    if type_of:
+        if 'job' in type_of:
+            status = insert_in(data, index_file='./index/job_index',is_job=True)
+        elif 'farm' in type_of:
+            status = insert_in(data, index_file='./index/farm_products_index',is_job=False)
+        else:
+            return response_json('参数错误，type值为 job或farm',0) 
+
+        if status:
+            code = 1
+            data = '插入成功！'
+        else:
+            code = 0
+            data = '插入失败！'
+    else:
+        code = 0
+        data = '参数错误，type值为 job或farm'
+
+    return response_json(data, code)
 
 run(host='localhost', port=8080)

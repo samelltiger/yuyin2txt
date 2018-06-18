@@ -137,15 +137,32 @@ def response_json(data,code=1):
     return json.dumps(json_res, ensure_ascii=False, indent=4)
 
 # 插入索引
-def insert_in(data, index_file='./index/indexer'):
-    if not isinstance(data,list): 
+def insert_in(data, index_file='./index/job_index',is_job=True):
+    try:
+        if not isinstance(data,list): 
+            return False
+
+        analyzer = ChineseAnalyzer()
+        ix = open_dir(index_file)#here to create schema  
+        # print(musics)
+        writer = ix.writer()
+
+        if is_job:
+            schema = Schema(id=NUMERIC(stored=True, unique=True),  
+                            job_name=TEXT(stored=True, analyzer=analyzer),  
+                            type=TEXT(stored=True, analyzer=analyzer),  
+                            company_name=TEXT(stored=True, analyzer=analyzer))
+
+            for iterm in data:
+                writer.add_document(id=iterm['id'],job_name=iterm['jobName'],type=iterm['type'],company_name=iterm['company_name'])  
+        else:
+            schema = Schema(id=NUMERIC(stored=True, unique=True),  
+                            maintype=TEXT(stored=True, analyzer=analyzer),  
+                            place=TEXT(stored=True, analyzer=analyzer)) 
+            for iterm in data:
+                writer.add_document(id=iterm['id'],maintype=iterm['maintype'],place=iterm['place'])  
+
+        writer.commit() 
+        return True
+    except:
         return False
-
-    ix = open_dir(index_file)#here to create schema  
-    # print(musics)
-    writer = ix.writer()
-
-    for iterm in data:
-        writer.add_document(book_id=iterm['book_id'],book_name=iterm['book_name'],book_desc=iterm['book_desc'],)
-    writer.commit() 
-    return True
