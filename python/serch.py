@@ -36,9 +36,9 @@ def index( ):
 
 
 # 创建索引
-@route('/index',method='POST')
+@route('/index',method='GET')
 def creat_index():
-    type_of = request.forms.get('type') or False
+    type_of = request.query.type or False
     status = False
     if type_of:
         if 'job' in type_of:
@@ -55,7 +55,7 @@ def creat_index():
             data = '创建成功！'
         else:
             code = 0
-            data = '没有找到你想要的数据'
+            data = '创建失败！'
     else:
         code = 0
         data = '参数错误，type值为 job或farm或both'
