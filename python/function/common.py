@@ -117,7 +117,7 @@ def search(searchwords, search_fields , index_file):
         res = list(r)
         if len(res):
             results.append(res)
-            kws.append('test,')
+            kws.append('test')
         
     return results,kws
 
