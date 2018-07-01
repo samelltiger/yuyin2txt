@@ -9,7 +9,8 @@ from whoosh.fields import Schema, STORED, ID, KEYWORD, TEXT, NUMERIC,NGRAMWORDS
 from whoosh.index import create_in,open_dir
 from jieba.analyse import ChineseAnalyzer
 from whoosh.qparser import QueryParser,MultifieldParser
-from whoosh import columns, fields, index, sorting
+from whoosh import columns, fields, index, sorting, query
+import numpy as np
 
 # 创建一个工作数据索引
 def create_job_index( ):
@@ -100,13 +101,24 @@ def search(searchwords, search_fields , index_file):
 
     results = []
     kws = []
-    for kw in cut_for_search(searchwords):
-        q = qp.parse(kw)
-        res = list(searcher.search(q))
+    if './index/farm_products_index' in index_file:
+        for kw in cut_for_search(searchwords):
+            q = qp.parse(kw)
+            res = list(searcher.search(q, limit=50))
+            if len(res):
+                results.append(res)
+                kws.append(kw)
+
+    elif './index/job_index' in index_file:
+        t = np.array(list(cut_for_search(searchwords)))
+        cuted_s = ' '.join(t)
+        q = qp.parse(cuted_s)
+        r = searcher.search(q, terms=True, limit=50)
+        res = list(r)
         if len(res):
             results.append(res)
-            kws.append(kw)
-
+            kws.append(cuted_s)
+        
     return results,kws
 
 # 将搜索到的数据以及所有结果打包
