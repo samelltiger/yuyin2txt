@@ -17,7 +17,7 @@ def create_job_index( ):
         conn = ms.connect(host='120.79.14.47',user='root',passwd='Kermi0116',db='58city',charset="utf8")
         cu = conn.cursor(cursorclass = ms.cursors.DictCursor)
         cu.execute("set names utf8")
-        cu.execute('SELECT id,jobName,type,company_name FROM `job`')
+        cu.execute('SELECT id,jobName,type,area_a,company_name FROM `job`')
         iterms = cu.fetchall()
         if not iterms:
             return False
@@ -25,6 +25,7 @@ def create_job_index( ):
         analyzer = ChineseAnalyzer()
         schema = Schema(id=NUMERIC(stored=True, unique=True),  
                         job_name=TEXT(stored=True, analyzer=analyzer),  
+                        area_a=TEXT(stored=True, analyzer=analyzer),  
                         type=TEXT(stored=True, analyzer=analyzer),  
                         company_name=TEXT(stored=True, analyzer=analyzer))
         writer = create_index('job_index',schema)

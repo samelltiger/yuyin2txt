@@ -15,7 +15,7 @@ def index( ):
 
     if type_of:
         if 'job' in type_of:
-            res,kws = search(keywords, ['job_name','type','company_name'],'./index/job_index')
+            res,kws = search(keywords, ['job_name','type','area_a','company_name'],'./index/job_index')
         elif 'farm' in type_of:
             res,kws = search(keywords, ['maintype','place'],'./index/farm_products_index')
         else:
