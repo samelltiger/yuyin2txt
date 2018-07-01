@@ -115,9 +115,9 @@ def search(searchwords, search_fields , index_file):
         t = np.array(list(cut_for_search(searchwords)))
         job = t[np.isin(t,types)]
         city = t[np.isin(t,places)]
-        s = ' '.join(job) if job else ''
-        s += ' '.join(job) if city else ''
-
+        s = ' '.join(job)+' ' if job else ''
+        s += ' '.join(city) if city else ''
+        print(s)
         # cuted_s = ' '.join(job)
         q = qp.parse(s)
         r = searcher.search(q, terms=True, limit=50)
