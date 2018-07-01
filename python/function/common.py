@@ -110,9 +110,16 @@ def search(searchwords, search_fields , index_file):
                 kws.append(kw)
 
     elif './index/job_index' in index_file:
+        types = ['普工','服务员','快递员','货运司机','店员/营业员','保安','商务司机','送餐员','保洁','客服专员/助理','仓库管理员','收银员','促销/导购员','操作工','装卸/搬运工','专车司机','分拣员','电话客服','保姆','物流专员/助理','切割/焊工','车工/铣工','洗碗工','后厨','厨师/厨师长','电工','店长/卖场经理','网络/在线客服','学徒工','售前/售后服务']
+        places = ['大连','广州','上海','深圳','北京','宁波','哈尔滨','苏州','佛山','长沙','重庆','成都','烟台','青岛','廊坊','中山','沈阳','江门','东莞','济南','杭州','福州','威海','天津','石家庄','瓦房店','惠州','厦门','荣成']
         t = np.array(list(cut_for_search(searchwords)))
-        cuted_s = ' '.join(t)
-        q = qp.parse(cuted_s)
+        job = t[np.isin(t,types)]
+        city = t[np.isin(t,places)]
+        s = ' '.join(job) if job else ''
+        s += ' '.join(job) if city else ''
+
+        # cuted_s = ' '.join(job)
+        q = qp.parse(s)
         r = searcher.search(q, terms=True, limit=50)
         res = list(r)
         if len(res):
