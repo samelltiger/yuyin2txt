@@ -31,6 +31,10 @@ def index( ):
         code = 0
         data = '参数错误，type值为 job或farm'
 
+    if code:
+        data = sorted(data.items(),key=lambda x:len(x[1]))
+        data = dict(list(reversed(data)))
+
     js = response_json(data, code) 
     return js
 
