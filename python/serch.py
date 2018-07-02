@@ -31,12 +31,12 @@ def index( ):
         code = 0
         data = '参数错误，type值为 job或farm'
 
-    if code and 'farm' in type_of:
-        data = sorted(data.items(),key=lambda x:len(x[1]))
-        data = dict(list(reversed(data)))
-        sort = list(data.keys())
-        sort = ','.join(sort)
-        print(sort)
+    # if code and 'farm' in type_of:
+    #     data = sorted(data.items(),key=lambda x:len(x[1]))
+    #     data = dict(list(reversed(data)))
+    #     sort = list(data.keys())
+    #     sort = ','.join(sort)
+    #     print(sort)
         # data['sort'] = sort
 
     js = response_json(data, code)
