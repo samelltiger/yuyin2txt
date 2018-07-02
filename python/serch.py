@@ -17,7 +17,7 @@ def index( ):
         if 'job' in type_of:
             res,kws = search(keywords, ['job_name','type','area_a','company_name'],'./index/job_index')
         elif 'farm' in type_of:
-            res,kws = search(keywords, ['maintype','place'],'./index/farm_products_index')
+            res,kws = search(keywords, ['maintype','type','place'],'./index/farm_products_index')
         else:
             return response_json('参数错误，type值为 job或farm',0) 
 

@@ -50,7 +50,7 @@ def create_farm_index( ):
         conn = ms.connect(host='120.79.14.47',user='root',passwd='Kermi0116',db='farm_products',charset="utf8")
         cu = conn.cursor(cursorclass = ms.cursors.DictCursor)
         cu.execute("set names utf8")
-        cu.execute('SELECT id,maintype,place FROM `tendency`')
+        cu.execute('SELECT id,maintype,type,place FROM `tendency`')
         iterms = cu.fetchall()
         if not iterms:
             return False
@@ -58,13 +58,14 @@ def create_farm_index( ):
         analyzer = ChineseAnalyzer()
         schema = Schema(id=NUMERIC(stored=True, unique=True),  
                         maintype=TEXT(stored=True, analyzer=analyzer),  
+                        type=TEXT(stored=True, analyzer=analyzer),  
                         place=TEXT(stored=True, analyzer=analyzer)) 
         writer = create_index('farm_products_index',schema)
         if not writer:
             return False
 
         for iterm in iterms:
-            writer.add_document(id=iterm['id'],maintype=iterm['maintype'],place=iterm['place'])  
+            writer.add_document(id=iterm['id'],maintype=iterm['maintype'],type=iterm['type'],place=iterm['place'])  
 
         writer.commit()
         conn.close()
