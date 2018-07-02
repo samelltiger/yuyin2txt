@@ -3,3 +3,4 @@ config/config.local.php
 *.wav
 *.mp3
 python/index/*
+*.toc

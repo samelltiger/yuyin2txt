@@ -4,6 +4,7 @@ import json
 import re  
 import os
 import shutil
+import jieba
 from jieba import cut_for_search
 from whoosh.fields import Schema, STORED, ID, KEYWORD, TEXT, NUMERIC,NGRAMWORDS  
 from whoosh.index import create_in,open_dir
@@ -27,7 +28,7 @@ def create_job_index( ):
         schema = Schema(id=NUMERIC(stored=True, unique=True),  
                         job_name=TEXT(stored=True, analyzer=analyzer),  
                         area_a=TEXT(stored=True, analyzer=analyzer),  
-                        type=TEXT(stored=True, analyzer=analyzer),  
+                        type=TEXT(stored=True),  
                         company_name=TEXT(stored=True, analyzer=analyzer))
         writer = create_index('job_index',schema)
         if not writer:
@@ -110,14 +111,12 @@ def search(searchwords, search_fields , index_file):
                 kws.append(kw)
 
     elif './index/job_index' in index_file:
-        types = ['普工','服务员','快递员','货运司机','店员/营业员','保安','商务司机','送餐员','保洁','客服专员/助理','仓库管理员','收银员','促销/导购员','操作工','装卸/搬运工','专车司机','分拣员','电话客服','保姆','物流专员/助理','切割/焊工','车工/铣工','洗碗工','后厨','厨师/厨师长','电工','店长/卖场经理','网络/在线客服','学徒工','售前/售后服务']
-        places = ['大连','广州','上海','深圳','北京','宁波','哈尔滨','苏州','佛山','长沙','重庆','成都','烟台','青岛','廊坊','中山','沈阳','江门','东莞','济南','杭州','福州','威海','天津','石家庄','瓦房店','惠州','厦门','荣成']
+        jieba.load_userdict('./data/cut_words.txt') 
         t = np.array(list(cut_for_search(searchwords)))
-        job = t[np.isin(t,types)]
-        city = t[np.isin(t,places)]
+        t_p = map(lambda x: "'"+str(x)+"'",t)
+        job, city = get_search_words(','.join(t_p))
         s = ' '.join(job)+' ' if job else ''
         s += ' '.join(city) if city else ''
-        print(s)
         # cuted_s = ' '.join(job)
         q = qp.parse(s)
         r = searcher.search(q, terms=True, limit=50)
@@ -127,6 +126,17 @@ def search(searchwords, search_fields , index_file):
             kws.append('test')
         
     return results,kws
+
+def get_search_words(kws):
+    conn = ms.connect(host='120.79.14.47',user='root',passwd='Kermi0116',db='58city',charset="utf8")
+    cu = conn.cursor(cursorclass = ms.cursors.DictCursor)
+    cu.execute("set names utf8")
+    cu.execute("SELECT type FROM `job` WHERE type in (%s) GROUP BY type"%(kws,))
+    jobs = cu.fetchall()
+
+    cu.execute("SELECT area_a FROM `job` WHERE area_a in (%s) GROUP BY area_a"%(kws,))
+    area_as = cu.fetchall()
+    return [i['type'] for i in jobs],[j['area_a'] for j in area_as]
 
 # 将搜索到的数据以及所有结果打包
 def list_to_dict(res, kws, id_field, return_ids=False):
