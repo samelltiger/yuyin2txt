@@ -36,7 +36,8 @@ def index( ):
         data = dict(list(reversed(data)))
         sort = list(data.keys())
         sort = ','.join(sort)
-        data['sort'] = sort
+        print(sort)
+        # data['sort'] = sort
 
     js = response_json(data, code)
     return js
