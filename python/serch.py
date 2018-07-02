@@ -34,8 +34,7 @@ def index( ):
     if code:
         data = sorted(data.items(),key=lambda x:len(x[1]))
         data = dict(list(reversed(data)))
-        sort = list(data.keys())
-        data['sort'] = sort
+        # sort = list(data.keys())
 
     js = response_json(data, code) 
     return js
