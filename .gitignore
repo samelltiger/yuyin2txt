@@ -4,3 +4,6 @@ config/config.local.php
 *.mp3
 python/index/*
 *.toc
+python/.DS_Store
+python/aaa.php
+python/serch的副本.py
